@@ -2,10 +2,12 @@ const Prism = require("prismjs");
 const PrismLoader = require("./PrismLoader");
 const HighlightLinesGroup = require("./HighlightLinesGroup");
 const getAttributes = require("./getAttributes");
+const coerseToKnownLanguage = require("./coerseToKnownLanguage");
 
 module.exports = function (options = {}) {
   const preAttributes = getAttributes(options.preAttributes);
   const codeAttributes = getAttributes(options.codeAttributes);
+  const {coerse = null} = options;
 
   return function(str, language) {
     if(!language) {
@@ -16,6 +18,10 @@ module.exports = function (options = {}) {
     let split = language.split("/");
     if( split.length ) {
       language = split.shift();
+    }
+
+    if(coerse) {
+      language = coerseToKnownLanguage(language, coerse);
     }
 
     let html;
